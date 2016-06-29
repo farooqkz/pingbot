@@ -26,3 +26,19 @@ User Commands can be used by everyone:
 !now : returns current time
 
 !isprime <num> : says num is prime or not
+
+Admin Commands can be used just by admins:
+
+!quit : disconnects bot from IRC
+
+!say <channel|person> <msg> : sends <msg> to <channel|person>
+
+!part <channel> : parts <channel>
+
+!join <channel> : joins <channel>
+
+!add_admin <nick> : adds <nick> to admins list
+
+!remove_admin <nick> : removes <nick> from admins list
+
+

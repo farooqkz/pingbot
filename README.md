@@ -41,4 +41,10 @@ Admin Commands can be used just by admins:
 
 !remove_admin <nick> : removes <nick> from admins list
 
+!op <nick> : give OP to <nick>
 
+!deop <nick> : takes OP from <nick>
+
+!voice <nick> : give Voice to <nick>
+
+!devoice <nick> : takes Voice from <nick>

@@ -49,6 +49,8 @@ Admin Commands can be used just by admins:
 
 !devoice <nick> : takes Voice from <nick>
 
+!kick <nick> : Kicks <nick>
+
 
 #Raw Pingbot
 raw_ping.py is a version of Pingbot without any command except !ping and !help

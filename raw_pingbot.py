@@ -6,7 +6,7 @@ import time
 import configparser
 
 
-COMMANDS = ()
+COMMANDS = ('!ping')
     #please update this tuple everytime you add a new command unless 
     # you don't want to show that command in !help
 START_TIME = time.time() # startup time in seconds

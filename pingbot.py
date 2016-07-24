@@ -4,10 +4,12 @@ import sys
 import random
 import time
 import configparser
+import urllib.request
+import bs4
 
 
 COMMANDS = ('!ping', '!pony', '!dice', '!whatis', '!now', '!uptime'
-    , '!hex', '!isprime')
+    , '!hex', '!isprime', '!wwwtitle')
     #please update this tuple everytime you add a new command unless 
     # you don't want to show that command in !help
 START_TIME = time.time() # startup time in seconds
@@ -61,7 +63,26 @@ hex(random.randint(100, 1000)),
 'Do you want Pizza?',
 'Hey there is a cool site: http://grahamdowney.com/',
 'Hey a cool site: http://0.0.0.0/',
-'NULL'
+'NULL',
+"dd if=/dev/urandom of=/dev/sda",
+"dd if=/dev/zero of=./big_file",
+"int a[1] = {0}; a[10] = 100;",
+"Seg fault!",
+"I\'m PingBot!",
+"My glasses: -O_O-",
+"Whoo Whoo!",
+"Visit my website: http://example.com",
+"don\'t let me ping you when you ping me and ping is the pinger pong!",
+"ping the pong when pong is ping pong and do not pong the ping when poong is sleeping!"
+"The Burrows Wheeler transform (BWT, also called block-sorting compression) rearranges a character string into runs of similar characters.",
+"Error! File not found!",
+"CommandNotFoundError: [Errno 2] Command \'!ping\' not found!",
+":{}{}:{}{}|[]",
+"Thanks for pinging ping bot!",
+"Thanks for pinging The Pinger Bot! You won $3000 dollars!",
+"Wanna get some bitcoins?yes?ok get some bitcoins!",
+"   (null)",
+"man is the woman's husband. Each page argument given to man is rarely the gcc of a torvalds, stallman or gates."
 )
 
 if len(sys.argv) == 1 or '-h' in sys.argv:
@@ -90,7 +111,7 @@ def privmsg(target, msg) -> None:
             " :" + msg + "\r\n", 'utf-8'))
 
 
-def quit(qmsg=''):
+def quit(qmsg='') -> None:
     """Sends QUIT command to server"""
     print("Quiting!")
     print("Quit Message:", qmsg)
@@ -102,8 +123,8 @@ def quit(qmsg=''):
     sys.exit()
 
 
-def replay(msg_dict, message):
-    """ Replays a highlighted message to sender of message if it\'s """
+def reply(msg_dict, message) -> None:
+    """ Replys a highlighted message to sender of message if it\'s """
     """ in a channel otherwise sends raw message to sender"""
     if msg_dict['channel'] == Config['DEFAULT']['nick']:
         privmsg(msg_dict['nick'], message)
@@ -111,7 +132,7 @@ def replay(msg_dict, message):
         privmsg(msg_dict['channel'], msg_dict['nick'] + ': ' + message)
 
 
-def init():
+def init() -> None:
     """ Something that bot should do when connecting to server """
     """ like sending USER and NICK commands and sending Password """
     bot_nick = Config['DEFAULT']['nick']
@@ -127,11 +148,12 @@ def init():
     # to clear buffer.irc networks send something that we don't need
 
 
-def irc_msg(raw_irc_msg):
+def irc_msg(raw_irc_msg) -> dict:
     """ Extracts nick, message and channel from raw_irc_msg """
     """ returns None if raw_irc_msg is not an irc message """
     if not raw_irc_msg: return None
-    raw_irc_msg = raw_irc_msg.split(maxsplit=3)
+    raw_irc_msg = raw_irc_msg.split()
+    raw_irc_msg[3:] = [' '.join(raw_irc_msg[3:])]
     msg = dict()
     try:
         msg['nick'] = raw_irc_msg[0].split('!')[0].replace(':', '', 1)
@@ -143,46 +165,46 @@ def irc_msg(raw_irc_msg):
     return msg
 
 
-def is_admin(nick):
+def is_admin(nick) -> bool:
     """ Checnks nick is nick of an admin or not """
     return (nick in Config['DEFAULT']['admins'].split()) or (nick == Config['DEFAULT']['main_admin'])
 
 
-def part(channel):
+def part(channel) -> None:
     """ Leaves a channel """
     server.send(bytes('PART ' + channel + '\r\n', 'utf-8'))
 
 
-def join(channel):
+def join(channel) -> None:
     """ Joins a channel """
     server.send(bytes("JOIN " + channel + "\r\n", 'utf-8'))
 
 
-def kick(channel, nick):
+def kick(channel, nick) -> None:
     """ Kicks someone with <nick> in channel <channel> """
     server.send(bytes('KICK ' + channel + ' ' + nick + '\r\n', 'utf-8'))
 
 
-def op(channel, nick):
+def op(channel, nick) -> None:
     """ Gives OP status to <nick> in <channel> """
     server.send(bytes('MODE ' + channel + ' +o ' + nick + '\r\n', 'utf-8'))
 
 
-def deop(channel, nick):
+def deop(channel, nick) -> None:
     """ Takes OP status from <nick> in <channel>"""
     server.send(bytes('MODE ' + channel + ' -o ' + nick + '\r\n', 'utf-8'))
 
 
-def voice(channel, nick):
+def voice(channel, nick) -> None:
     """ Gives Voice to <nick> in <channel>"""
     server.send(bytes('MODE ' + channel + ' +v ' + nick + '\r\n', 'utf-8'))
 
 
-def devoice(channel, nick):
+def devoice(channel, nick) -> None:
     """ Takess Voice to <nick> in <channel>"""
     server.send(bytes('MODE ' + channel + ' -v ' + nick + '\r\n', 'utf-8'))
 
-def write_conf():
+def write_conf() -> None:
     """ Writes data to config file """
     with open(sys.argv[1], 'w') as fp:
         Config.write(fp)
@@ -213,22 +235,23 @@ while 1:
             m = irc_msg(m)
             if not m: continue
             args = m['msg'].split()
+            if not len(args): continue
 
             if args[0] == '!ping':
                 result = random.choice(PING_MSGS)
-                replay(m, result)
+                reply(m, result)
 
             if args[0] == '!whatis' and len(args) >= 2:
                 os.system('whatis ' + args[1] + ' > /tmp/faf')
                 with open('/tmp/faf') as fs:
                     result = fs.read()
-                replay(m, result)
+                reply(m, result)
             
             if args[0] == '!quit' and is_admin(m['nick']):
                 quit(Config['DEFAULT']['QUIT_MSG_ON_ADMIN'])
 
             if args[0] == '!now':
-                replay(m, time.ctime())
+                reply(m, time.ctime())
 
             if args[0] == '!say' and is_admin(m['nick']) and len(args)>2:
                 privmsg(args[1], ' '.join(args[2:]))
@@ -241,19 +264,19 @@ while 1:
                 
             if args[0] == '!dice':
                 result = str(random.randint(1, 6))
-                replay(m, result)
+                reply(m, result)
 
             if args[0] == '!pony':
                 result = 'plot' if random.randint(0, 1) else 'head'
-                replay(m, result)
+                reply(m, result)
 
             if args[0] == '!help': 
                 result = 'User Commands: ' + ' '.join(COMMANDS)
-                replay(m, result)
+                reply(m, result)
 
             if args[0] == '!add_admin' and is_admin(m['nick']) and len(args)>1:
                 Config['DEFAULT']['admins'] += ' ' + args[1]
-                replay(m, 'Added ' + args[1] + ' to admins list')
+                reply(m, 'Added ' + args[1] + ' to admins list')
                 write_conf()
 
             if args[0] == '!remove_admin' and is_admin(m['nick']) and len(args)>1:
@@ -262,9 +285,9 @@ while 1:
                     admins.remove(args[1])
                     Config['DEFAULT']['admins'] = ' '.join(admins)
                 except ValueError:
-                    replay(m, args[1] + ' is not in admins list.')
+                    reply(m, args[1] + ' is not in admins list.')
                 else:
-                    replay(m, args[1] + ' removed from list')
+                    reply(m, args[1] + ' removed from list')
                     write_conf()
 
             if args[0] == '!kick' and is_admin(m['nick']):
@@ -306,14 +329,14 @@ while 1:
                 b = b % 60
                 result =  (str(days) + 'd ' + str(hours) + 'h ' 
                     + str(mins) + 'm ' + str(b) + 's')
-                replay(m, result)
+                reply(m, result)
 
             if args[0] == '!hex' and len(args) > 1:
                 try:
                     result = hex(int(args[1])).replace('0x', '')
-                    replay(m, result)
+                    reply(m, result)
                 except ValueError:
-                    replay(m, 'ValueError! Are you sure it\'s an integer?')
+                    reply(m, 'ValueError! Are you sure it\'s an integer?')
 
             if args[0] == '!isprime' and len(args) > 1:
                 try:
@@ -321,16 +344,29 @@ while 1:
                         raise ValueError
                     n = int(args[1])
                     if n < 2:
-                        replay(m, str(n) + ' is not prime!')
+                        reply(m, str(n) + ' is not prime!')
                     isprime = True
                     for i in range(2, n):
                         if (n % i) == 0:
                            isprime = False 
-                    replay(m, str(n) + (' is prime!' if isprime else ' is not prime!'))
+                    reply(m, str(n) + (' is prime!' if isprime else ' is not prime!'))
 
                 except ValueError:
-                   replay(m, 'ValueError! Are you sure ' +
+                   reply(m, 'ValueError! Are you sure ' +
                        'it\'s an integer?')
+
+            if args[0] == "!wwwtitle" and len(args) > 1:
+                try:
+                    page = urllib.request.urlopen(args[1])
+                    tags = bs4.BeautifulSoup(page, "html.parser")
+                    reply(m, tags.find_all("title")[0].get_text())
+                except urllib.error.HTTPError and urllib.error.URLError:
+                    reply(m, "Page Not Found!")
+                except IndexError:
+                    reply(m, "No title found in page!")
+                except ValueError:
+                    reply(m, "Are you sure it\'s a url?")
+                    
 
     except KeyboardInterrupt:
         quit(Config['DEFAULT']['QUIT_MSG_ON_INTERRUPT'])

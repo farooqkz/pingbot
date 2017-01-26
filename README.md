@@ -13,11 +13,11 @@ User Commands can be used by everyone:
 
 !ping : pings the bot
 
-!hex <decimal_number> : converts a decimal to hex format
+!hex \<decimal_number\> : converts a decimal to hex format
 
-!uptime : how much bot is running?
+!uptime : uptime of the bot
 
-!whatis <prog_name> : Linux whatis command
+!whatis \<prog_name\> : Linux whatis command
 
 !pony : Will return plot or head
 
@@ -25,31 +25,31 @@ User Commands can be used by everyone:
 
 !now : returns current time
 
-!isprime <num> : says num is prime or not
+!isprime \<num\> : says num is prime or not
 
 Admin Commands can be used just by admins:
 
 !quit : disconnects bot from IRC
 
-!say <channel|person> <msg> : sends <msg> to <channel|person>
+!say \<channel|person\> \<msg\> : sends \<msg\> to \<channel|person\>
 
-!part <channel> : parts <channel>
+!part \<channel\> : parts \<channel\>
 
-!join <channel> : joins <channel>
+!join \<channel\> : joins \<channel\>
 
-!add_admin <nick> : adds <nick> to admins list
+!add_admin \<nick\> : adds \<nick\> to admins list
 
-!remove_admin <nick> : removes <nick> from admins list
+!remove_admin \<nick\> : removes \<nick\> from admins list
 
-!op <nick> : give OP to <nick>
+!op \<nick\> : give OP to \<nick\>
 
-!deop <nick> : takes OP from <nick>
+!deop \<nick\> : takes OP from \<nick\>
 
-!voice <nick> : give Voice to <nick>
+!voice \<nick\> : give Voice to \<nick\>
 
-!devoice <nick> : takes Voice from <nick>
+!devoice \<nick\> : takes Voice from \<nick\>
 
-!kick <nick> : Kicks <nick>
+!kick \<nick\> : Kicks \<nick\>
 
 
 #Raw Pingbot

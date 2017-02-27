@@ -8,6 +8,7 @@ import urllib.request
 import bs4
 
 
+
 COMMANDS = ('!ping', '!pony', '!dice', '!whatis', '!now', '!uptime'
     , '!hex', '!isprime', '!wwwtitle')
     #please update this tuple everytime you add a new command unless 
@@ -159,6 +160,12 @@ def irc_msg(raw_irc_msg) -> dict:
         msg['nick'] = raw_irc_msg[0].split('!')[0].replace(':', '', 1)
         msg['channel'] = raw_irc_msg[2]
         msg['msg'] = raw_irc_msg[-1].replace(':', '', 1).replace('\r\n', '')
+        
+        with open('log.txt','w') as log_file : #log added
+            log_file.write(msg['nick'],msg['channel'],msg['msg'],sep=' : ',end='\n*****\n')
+            log_file.flush()
+            
+        
         if not msg['channel'].startswith('#') and msg['channel'] != Config['DEFAULT']['nick']:
             return None
     except IndexError: return None

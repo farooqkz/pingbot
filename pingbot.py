@@ -103,6 +103,7 @@ except FileNotFoundError:
 
 
 global server
+global clogfile
 
 
 def privmsg(target, msg) -> None:
@@ -121,6 +122,8 @@ def quit(qmsg='') -> None:
     else:
         server.send(bytes("QUIT\r\n", "utf-8"))
     server.close()
+    clogfile.write("===============================================")
+    clogfile.close()
     sys.exit()
 
 
@@ -160,10 +163,9 @@ def irc_msg(raw_irc_msg) -> dict:
         msg['nick'] = raw_irc_msg[0].split('!')[0].replace(':', '', 1)
         msg['channel'] = raw_irc_msg[2]
         msg['msg'] = raw_irc_msg[-1].replace(':', '', 1).replace('\r\n', '')
-        
-        with open('log.txt','w') as log_file : #log added
-            log_file.write(msg['nick'],msg['channel'],msg['msg'],sep=' : ',end='\n*****\n')
-            log_file.flush()
+       
+        clogfile.write('[' + msg['channel'] + ']' + ' ' + '<' + msg['nick'] +
+                       '>' + ' ' + msg['msg'] + '\n')
             
         
         if not msg['channel'].startswith('#') and msg['channel'] != Config['DEFAULT']['nick']:
@@ -224,6 +226,7 @@ server.connect((HOST, PORT))
 print("Connected!")
 init()
 print("Initiziled!")
+clogfile = open("clog.txt", "a")
 
 
 while 1:

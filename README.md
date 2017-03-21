@@ -1,12 +1,12 @@
 # pingbot
-##An IRC utility bot
+## An IRC utility bot
 
 PingBot is a simple IRC utility bot written in Python3.4!
 
 Usage: `python3.4 pingbot.py <config_file>`
 To learn how to make a config file see def.conf
 
-###Commands
+### Commands
 Pingbot has 2 groups of commands: User Commands and Admin Commands
 
 User Commands can be used by everyone:
@@ -52,7 +52,7 @@ Admin Commands can be used just by admins:
 !kick \<nick\> : Kicks \<nick\>
 
 
-#Raw Pingbot
+# Raw Pingbot
 raw_ping.py is a version of Pingbot without any command except !ping and !help
 
-you may use it to make your own pingbot. if you did please send me a version of it! Thanks!
+You may use it to make your own pingbot. if you did please send me a version of it! Thanks!

@@ -141,7 +141,7 @@ PORT = int(Config['DEFAULT']['port'])
 server.connect((HOST, PORT))
 print("Connected!")
 init()
-print("Initiziled!")
+print("Initialized!")
 
 
 while 1:

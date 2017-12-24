@@ -37,9 +37,9 @@ Admin Commands can be used just by admins:
 
 !join \<channel\> : joins \<channel\>
 
-!add_admin \<nick\> : adds \<nick\> to admins list
+!add\_admin \<nick\> : adds \<nick\> to admins list
 
-!remove_admin \<nick\> : removes \<nick\> from admins list
+!remove\_admin \<nick\> : removes \<nick\> from admins list
 
 !op \<nick\> : give OP to \<nick\>
 
@@ -53,6 +53,6 @@ Admin Commands can be used just by admins:
 
 
 # Raw Pingbot
-raw_ping.py is a version of Pingbot without any command except !ping and !help
+raw\_ping.py is a version of Pingbot without any command except !ping and !help
 
 You may use it to make your own pingbot. if you did please send me a version of it! Thanks!

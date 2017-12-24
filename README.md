@@ -17,7 +17,7 @@ User Commands can be used by everyone:
 
 !uptime : uptime of the bot
 
-!whatis \<prog_name\> : Linux whatis command
+!whatis \<prog_name\> : Unix whatis command
 
 !pony : Will return plot or head
 
